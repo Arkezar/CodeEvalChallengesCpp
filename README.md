@@ -1,2 +1,2 @@
 # CodeEvalChallangesCpp
-My solutions to codeeval challanges
+My solutions to codeeval challenges
