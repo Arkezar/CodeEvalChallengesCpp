@@ -44,8 +44,13 @@ static string sfi::logic::toDot(string str, int base){
             str.insert(i,".0x");
         }
     } else if(base == 10) {
-            unsigned long tmp = stoul(str);
-            str = dotToDotDec(toDot(bitset<32>(tmp).to_string(),2),2);
+        unsigned long tmp;
+        try {
+             tmp = stoul(str);
+        } catch (exception e){
+            return "0";
+        }
+        str = dotToDotDec(toDot(bitset<32>(tmp).to_string(),2),2);
     } else {
         for (int i = str.length() / 4; i < str.length(); i += str.length() / 4 + 1) {
             str.insert(i, ".");
@@ -61,7 +66,11 @@ static bool sfi::logic::validateAddr(const string& addr){
     istringstream ss(addr);
     string oct;
     while(getline(ss,oct,'.')){
-        octets.push_back(stoul(oct));
+        try {
+            octets.push_back(stoul(oct));
+        } catch (exception e) {
+            return false;
+        }
     }
 
     if(octets.size() < 4)
@@ -84,8 +93,13 @@ static string sfi::logic::dotToDotDec(const string& str, int base){
     istringstream stream(str);
     string octet;
     string result{""};
+    long oct;
     while(getline(stream,octet,'.')){
-            long oct = stoul(octet, nullptr, base);
+            try {
+                oct = stoul(octet, nullptr, base);
+            } catch (exception e){
+                return "0";
+            }
             result += to_string(oct) + ".";
     }
     return result.substr(0,result.length()-1);
